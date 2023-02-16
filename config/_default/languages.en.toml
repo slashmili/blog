@@ -1,0 +1,26 @@
+languageCode = "en"
+languageName = "English"
+displayName = "EN"
+isoCode = "en"
+weight = 1
+rtl = false
+
+title = "Funky Ex"
+# description = "My awesome website"
+# copyright = "Copy, _right?_ :thinking_face:"
+
+dateFormat = "2 January 2006"
+
+[params]
+  # mainSections = ["section1", "section2"]
+
+[author]
+  name = "Milad"
+  image = "img/author.png"
+  headline = "I'm only human"
+  bio = "A little bit about you"
+   links = [
+     { github = "https://github.com/slashmili" },
+     { twitter = "https://twitter.com/slashmili" },
+     { youtube = "https://youtube.com/funky_ex" },
+   ]
