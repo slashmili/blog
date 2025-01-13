@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://slashmili.github.io/blog/sitemap.xml
+Sitemap: https://milad.rastian.me/sitemap.xml
