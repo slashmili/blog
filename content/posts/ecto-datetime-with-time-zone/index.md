@@ -5,7 +5,7 @@ title = 'Ecto Datetime With Time Zone'
 featured_image = '/posts/posts/ecto-datetime-with-time-zone/cover.jpg'
 +++
 
-A few days ago, while implementing a feature to store event dates, I stumbled upon what I initially thought was a straightforward task: saving future dates in a database along with their time zones. How hard could it be, right? Turns out, it’s not so simple.
+While implementing a feature to store event dates, I stumbled upon what I initially thought was a straightforward task: saving future dates in a database along with their time zones. How hard could it be, right? Turns out, it’s not so simple.
 
 
 ### The first Attemp: TIMESTAMP WITH TIME ZONE
