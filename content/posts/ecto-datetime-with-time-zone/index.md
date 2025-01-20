@@ -1,6 +1,6 @@
 +++
 date = '2025-01-18T12:01:00+01:00'
-draft = true
+draft = false
 title = 'Ecto Datetime With Time Zone'
 featured_image = '/posts/posts/ecto-datetime-with-time-zone/cover.jpg'
 +++
