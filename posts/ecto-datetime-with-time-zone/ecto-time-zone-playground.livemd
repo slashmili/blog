@@ -1,0 +1,181 @@
+# TZ
+
+```elixir
+Mix.install([
+  {:ecto_sql, "~> 3.12"},
+  {:ecto_sqlite3, "~> 0.18.1"},
+  {:tz, "~> 0.28.1"}
+])
+```
+
+## Section
+
+```elixir
+defmodule MyApp.Repo do
+  use Ecto.Repo, otp_app: :my_app, adapter: Ecto.Adapters.SQLite3
+end
+
+defmodule MyApp.Repo.Migrations.Initial do
+  use Ecto.Migration
+
+  def change do
+    create table(:events_v1) do
+      add(:name, :string, null: false)
+      add(:start_datetime, :utc_datetime, null: false)
+    end
+
+     create table(:events_v2) do
+      add(:name, :string, null: false)
+      add(:start_datetime, :utc_datetime, null: false)
+      add(:start_datetime_time_zone, :string, null: false)
+    end
+    
+     create table(:events_v3) do
+      add(:name, :string, null: false)
+      add(:start_datetime, :naive_datetime, null: false)
+      add(:start_datetime_time_zone, :string, null: false)
+      add(:start_datetime_utc, :utc_datetime, null: false)       
+    end    
+  end
+end
+
+db_config = [database: ":memory:", pool_size: 1]
+MyApp.Repo.start_link(db_config)
+Ecto.Migrator.up(MyApp.Repo, 1, MyApp.Repo.Migrations.Initial)
+Calendar.put_time_zone_database(Tz.TimeZoneDatabase)
+```
+
+## The first Attemp: TIMESTAMP WITH TIME ZONE
+
+```elixir
+defmodule EventV1 do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "events_v1" do
+    field(:name, :string)
+    field(:start_datetime, :utc_datetime)
+  end
+
+  def changeset(product, params \\ %{}) do
+    product
+    |> cast(params, [:name, :start_datetime])
+    |> validate_required([:name, :start_datetime])
+  end
+
+
+  @doc """
+      iex> expected_time_zone = "Europe/Berlin"
+      iex> event_date = DateTime.shift_zone!(~U[2025-02-07 19:00:00.0Z], expected_time_zone)
+      iex> event_date.time_zone
+      "Europe/Berlin"
+      iex> event = EventV1.create!(%{name: "Elixir Berlin Feb 2025", start_datetime: event_date})
+      iex> assert event.start_datetime.time_zone == expected_time_zone
+  """
+  def create!(attrs) do
+    %EventV1{}
+    |> EventV1.changeset(attrs)
+    |> MyApp.Repo.insert!()
+  end
+end
+
+```
+
+## The Second Attempt: Storing the Time Zone Separately
+
+```elixir
+defmodule EventV2 do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "events_v2" do
+    field(:name, :string)
+    field(:start_datetime, :utc_datetime)
+    field(:start_datetime_time_zone, :string)
+  end
+
+  def changeset(product, params \\ %{}) do
+    product
+    |> cast(params, [:name, :start_datetime, :start_datetime_time_zone])
+    |> validate_required([:name, :start_datetime, :start_datetime_time_zone])
+  end
+
+
+  @doc """
+      iex> expected_time_zone = "Europe/Berlin"
+      iex> event_date = DateTime.shift_zone!(~U[2025-02-07 19:00:00.0Z], expected_time_zone)
+      iex> event_date.time_zone
+      "Europe/Berlin"
+      iex> event = EventV2.create!(%{name: "Elixir Berlin Feb 2025", start_datetime: event_date, start_datetime_time_zone: event_date.time_zone})
+      iex> assert event.start_datetime.time_zone == expected_time_zone
+  """
+
+  def create!(attrs) do
+    %EventV2{}
+    |> EventV2.changeset(attrs)
+    |> MyApp.Repo.insert!()
+    |> load_start_datetime()
+  end
+
+  def get!(id) do
+    id
+    |> MyApp.Repo.get!()
+    |> load_start_datetime()
+  end
+
+  defp load_start_datetime(event) do
+    %{event | start_datetime: DateTime.shift_zone!(event.start_datetime, event.start_datetime_time_zone)}
+  end
+end
+
+```
+
+## The Final Approach: The “Wall Clock” Timestamp
+
+```elixir
+defmodule EventV3 do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "events_v3" do
+    field(:name, :string)
+    field(:start_datetime, :naive_datetime)
+    field(:start_datetime_time_zone, :string)
+    field(:start_datetime_utc, :utc_datetime)
+  end
+
+  def changeset(product, params \\ %{}) do
+    product
+    |> cast(params, [:name, :start_datetime, :start_datetime_time_zone])
+    |> validate_required([:name, :start_datetime, :start_datetime_time_zone])
+    |> maybe_cast_utc_datetime()
+  end
+
+  defp maybe_cast_utc_datetime(%{valid?: true} = changeset) do
+    start_datetime = get_change(changeset, :start_datetime)
+    start_datetime_time_zone = get_change(changeset, :start_datetime_time_zone)
+    datetime_utc = 
+      DateTime.shift_zone!(DateTime.from_naive!(start_datetime, start_datetime_time_zone), "Etc/UTC")
+     Ecto.Changeset.change(changeset, %{start_datetime_utc: datetime_utc})
+  end
+
+  defp maybe_cast_utc_datetime(changeset) do
+    changeset
+  end
+
+
+  @doc """
+      iex> expected_time_zone = "Europe/Berlin"
+      iex> event_date = ~N[2025-02-07 19:00:00]
+      iex> event = EventV3.create!(%{name: "Elixir Berlin Feb 2025", start_datetime: event_date, start_datetime_time_zone: expected_time_zone})
+      iex> assert event.start_datetime == event_date
+      iex> assert event.start_datetime_utc == ~U[2025-02-07 18:00:00Z]
+  """
+
+  def create!(attrs) do
+    %EventV3{}
+    |> EventV3.changeset(attrs)
+    |> MyApp.Repo.insert!()
+  end
+end
+```
