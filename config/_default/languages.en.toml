@@ -15,8 +15,8 @@ title = "Milad's Notes"
 [params.author]
   name = "Milad"
   image = "img/author.png"
-  headline = "a little bit of Elixir everywhere"
-  # bio = "A little bit about you"
+  headline = "I’m a software engineer with 20+ years of experience, Head of Engineering @highmobility, and organizer of the @ElixirBerlin meetup."
+  bio = "I’m a software engineer with 20+ years of experience, Head of Engineering @highmobility, and organizer of the @ElixirBerlin meetup. I love coding, especially in Elixir, and when I’m not in tech mode, I’m running, playing video gaming, or playing softball."
    links = [
   #   { email = "mailto:hello@your_domain.com" },
   #   { link = "https://link-to-some-website.com/" },

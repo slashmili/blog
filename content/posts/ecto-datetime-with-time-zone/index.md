@@ -2,7 +2,7 @@
 date = '2025-01-18T12:01:00+01:00'
 draft = true
 title = 'Ecto Datetime With Time Zone'
-featured_image = '/posts/posts/ecto-datetime-with-time-zone/cover.png'
+featured_image = '/posts/posts/ecto-datetime-with-time-zone/cover.jpg'
 +++
 
 A few days ago, while implementing a feature to store event dates, I stumbled upon what I initially thought was a straightforward task: saving future dates in a database along with their time zones. How hard could it be, right? Turns out, it’s not so simple.
@@ -55,7 +55,7 @@ At first, I was content with this approach—at least for the initial version of
 
 ### The Challenge of Time Zones
 
-What I hadn’t considered was the ever-changing nature of time zones. They’re not immutable facts but are subject to political and cultural decisions. Countries often change daylight saving rules, and in some extreme cases,  Lebanon had two time zones for a some period depends on whom you were dealing with.[2].
+What I hadn’t considered was the ever-changing nature of time zones. They’re not immutable facts but are subject to political and cultural decisions. Countries often change daylight saving rules, and in some extreme cases,  [Lebanon had two time zones](https://www.bbc.com/news/world-middle-east-65079574) for a some period depends on whom you were dealing with.[2].
 
 
 ### The Final Approach: The “Wall Clock” Timestamp
@@ -81,6 +81,12 @@ To address these challenges, I adopted a hybrid solution:
 * Retain the time zone in a separate column: This allows me to reconstruct the full context of the event’s time while acknowledging that time zones may change in the future.
 * Calculate UTC timezone for query and other db operation.
 
-[view the code snippet](https://github.com/slashmili/blog/blob/main/content/posts/ecto-datetime-with-time-zone/ecto-time-zone-playground.livemd#the-second-attempt-storing-the-time-zone-separately)
+[view the code snippet](https://github.com/slashmili/blog/blob/main/content/posts/ecto-datetime-with-time-zone/ecto-time-zone-playground.livemd#the-final-approach-the-wall-clock-timestamp)
 
 By combining these, I ensure that my application captures both the event’s “real-world” timestamp(as the user sees it on the wall) and its contextual time zone information. It also remove the need of manually applying timezone on the datetime field after data is loaded from the database.
+
+
+### Resources
+
+* https://simonwillison.net/2024/Nov/27/storing-times-for-human-events/
+* https://hexdocs.pm/tz_datetime/TzDatetime.html
