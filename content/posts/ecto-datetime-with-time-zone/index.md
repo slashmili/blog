@@ -89,4 +89,5 @@ By combining these, I ensure that my application captures both the event’s “
 ### Resources
 
 * https://simonwillison.net/2024/Nov/27/storing-times-for-human-events/
+* https://hexdocs.pm/date_time_parser/future-utc-datetime.html
 * https://hexdocs.pm/tz_datetime/TzDatetime.html
