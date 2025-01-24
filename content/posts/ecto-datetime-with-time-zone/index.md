@@ -55,7 +55,7 @@ At first, I was content with this approach—at least for the initial version of
 
 ### The Challenge of Time Zones
 
-What I hadn’t considered was the ever-changing nature of time zones. They’re not immutable facts but are subject to political and cultural decisions. Countries often change daylight saving rules, and in some extreme cases,  [Lebanon had two time zones](https://www.bbc.com/news/world-middle-east-65079574) for a some period depends on whom you were dealing with.[2].
+What I hadn’t considered was the ever-changing nature of time zones. They’re not immutable facts but are subject to political and cultural decisions. Countries often change daylight saving rules, and in some extreme cases,  [Lebanon had two time zones](https://www.bbc.com/news/world-middle-east-65079574) for a some period depends on whom you were dealing with.
 
 
 ### The Final Approach: The “Wall Clock” Timestamp
