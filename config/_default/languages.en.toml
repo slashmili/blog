@@ -15,8 +15,8 @@ title = "Milad's Notes"
 [params.author]
   name = "Milad"
   image = "img/author.png"
-  headline = "I’m a software engineer with 20+ years of experience, Head of Engineering @highmobility, and organizer of the @ElixirBerlin meetup."
-  bio = "I’m a software engineer with 20+ years of experience, Head of Engineering @highmobility, and organizer of the @ElixirBerlin meetup. I love coding, especially in Elixir, and when I’m not in tech mode, I’m running, playing video gaming, or playing softball."
+  headline = "I’m a software engineer with 20+ years of experience, CTO @highmobility, and organizer of the @ElixirBerlin meetup."
+  bio = "I’m a software engineer with 20+ years of experience, CTO @highmobility, and organizer of the @ElixirBerlin meetup. I love coding, especially in Elixir, and when I’m not in tech mode, I’m running, playing video game, or playing softball."
    links = [
   #   { email = "mailto:hello@your_domain.com" },
   #   { link = "https://link-to-some-website.com/" },
@@ -60,8 +60,8 @@ title = "Milad's Notes"
   #   { tumblr = "https://username.tumblr.com" },
   #   { twitch = "https://twitch.tv/username" },
   #   { whatsapp = "https://wa.me/phone-number" },
-  #   { x-twitter = "https://twitter.com/username" },
-     { bluesky = "https://bsky.app/profile/slashmili.bsky.social" },
+     { x-twitter = "https://twitter.com/slashmili" },
+     { bluesky = "https://bsky.app/profile/milad.rastian.me" },
      { youtube = "https://www.youtube.com/@funky_ex" },
   #   { xing = "https://xing.com/profile/username" },
    ]

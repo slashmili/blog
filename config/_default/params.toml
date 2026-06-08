@@ -7,7 +7,7 @@
 
 colorScheme = "cyberpunk"
 defaultAppearance = "dark" # valid options: light or dark
-autoSwitchAppearance = true
+autoSwitchAppearance = false
 
 defaultThemeColor = "#050d1a"
 

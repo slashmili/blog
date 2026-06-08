@@ -18,12 +18,60 @@ footer {
   font-size: 0.875rem;
 }
 
-/* Light mode: prose headings → deep blue */
+/* Prose headings → electric cyan */
 .prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"] *)) {
-  color: rgba(0, 51, 170, 1);
+  color: rgba(0, 229, 255, 1);
 }
 
-/* Dark mode: prose headings → electric cyan */
-.dark .prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~="not-prose"] *)) {
-  color: rgba(0, 229, 255, 1);
+/* ===== Cyberpunk avatar / logo ===== */
+
+/* The profile avatar (Congo gives it .rounded-full.w-36) */
+.not-prose img.rounded-full {
+  position: relative;
+  border: 2px solid rgba(0, 229, 255, 0.9);
+  box-shadow:
+    0 0 0 4px rgba(5, 13, 26, 1),
+    0 0 12px 2px rgba(0, 229, 255, 0.7),
+    0 0 22px 6px rgba(57, 255, 20, 0.35);
+  animation: avatar-pulse 3s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+/* Glow pulse */
+@keyframes avatar-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px rgba(5, 13, 26, 1),
+      0 0 12px 2px rgba(0, 229, 255, 0.7),
+      0 0 22px 6px rgba(57, 255, 20, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(5, 13, 26, 1),
+      0 0 18px 4px rgba(0, 229, 255, 0.9),
+      0 0 34px 10px rgba(57, 255, 20, 0.5);
+  }
+}
+
+/* Hover: scale up + glitchy chromatic shake */
+.not-prose img.rounded-full:hover {
+  transform: scale(1.05);
+  filter: saturate(1.3) contrast(1.1);
+  animation: avatar-glitch 0.4s steps(2, end) infinite;
+}
+
+@keyframes avatar-glitch {
+  0%   { filter: saturate(1.3) drop-shadow(2px 0 0 rgba(0,229,255,0.8)) drop-shadow(-2px 0 0 rgba(57,255,20,0.8)); transform: scale(1.05) translate(0, 0); }
+  25%  { transform: scale(1.05) translate(-1px, 1px); }
+  50%  { filter: saturate(1.3) drop-shadow(-2px 0 0 rgba(0,229,255,0.8)) drop-shadow(2px 0 0 rgba(57,255,20,0.8)); transform: scale(1.05) translate(1px, -1px); }
+  75%  { transform: scale(1.05) translate(1px, 1px); }
+  100% { transform: scale(1.05) translate(0, 0); }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .not-prose img.rounded-full,
+  .not-prose img.rounded-full:hover {
+    animation: none;
+  }
 }
