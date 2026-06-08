@@ -1,3 +1,1 @@
 User-agent: *
-Allow: /
-Sitemap: https://milad.rastian.me/sitemap.xml
