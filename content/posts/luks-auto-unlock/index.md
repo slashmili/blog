@@ -1,6 +1,6 @@
 +++
 date = '2026-06-08T23:24:14+02:00'
-draft = true
+draft = false
 title = 'LUKS Auto-Unlock on CachyOS with TPM and Secure Boot'
 featured_image = '/posts/luks-auto-unlock/cover.png'
 +++
@@ -42,23 +42,23 @@ By itself, Secure Boot is not a bad idea. The complicated part is the ecosystem 
 [https://www.rodsbooks.com/efi-bootloaders/secureboot.html](https://www.rodsbooks.com/efi-bootloaders/secureboot.html)
 
 
-A lot of Linux guides still suggest turning off Secure Boot for simplicity. For this setup, though, Secure Boot is an important guardrail. I want the TPM to release the LUKS unlock secret only when the machine boots through the expected, trusted path.
+A lot of Linux guides still suggest turning off Secure Boot for simplicity. For this setup, though, Secure Boot is an important guardrail. I want the TPM to unseal the LUKS secret only when the machine boots through the expected, trusted path.
 
 So I followed the CachyOS Secure Boot setup guide and enrolled my own keys:  
 [https://wiki.cachyos.org/configuration/secure_boot_setup/#enabling-setup-mode-in-uefi](https://wiki.cachyos.org/configuration/secure_boot_setup/#enabling-setup-mode-in-uefi)
 
 The steps in the guide are easy to follow. A few notes:
-* On my Gigabyte motherboard, I had to choose **[screenshot of the BIOS Page]**.
+* On my Gigabyte motherboard, in order to reset Secure Boot keys, I had to choose "Reset to Setup Mode" and disable "Factory Key Provision". Check the screenshot of the setting [here](./aorus-secure-boot-reset.png).
 * `sbctl` creates and enrolls your own Secure Boot keys. It can also enroll Microsoft and firmware-provided keys, which may be useful for Windows dual booting or hardware/option ROM compatibility.
-* With Limine, Secure Boot needs a little extra care. Limine’s config checksum should be enrolled into the EFI binary
-The steps defined in the guide are easy to follow, few worthy notes:
-* the sbctl enrolls my own keys and optionally you can add microsoft and firmware‘s key enrolled in the chain. Otherwise Limine may refuse to boot or panic when Secure Boot enforcement is active.
+* With Limine, Secure Boot needs a little extra care. Limine’s config checksum should be enrolled into the EFI binary. Otherwise Limine may refuse to boot or panic when Secure Boot enforcement is active.
 
 After Secure Boot is set up, we are ready for the last step.
 
 ## TPM 
 
-TPM stands for Trusted Platform Module. On modern systems it may be a discrete chip or firmware-backed TPM. Either way, it provides hardware-backed cryptographic functions, including the ability to seal a secret to the machine’s measured boot state.
+TPM stands for Trusted Platform Module. On modern systems it may be a discrete chip or firmware-backed TPM(fTPM) running inside the CPU. Either way, it provides hardware-backed cryptographic functions, including the ability to seal a secret to the machine’s measured boot state.
+
+> ⚠️TPM has known vulnerabilities. Discrete TPMs are susceptible to bus sniffing, while firmware TPMs (fTPM) can be vulnerable to timing side-channel attacks. Assess your threat model and decide if the risk is acceptable
 
 That last part is what makes it useful here.
 
@@ -74,6 +74,7 @@ sudo systemd-cryptenroll /dev/nvmeXnYpZ \
 ```
 
 > **Before copy-pasting this command, read what PCRs mean and decide which ones match your threat model.**
+> You can find list of  well-known PCR Definitions [here](https://www.freedesktop.org/software/systemd/man/latest/systemd-cryptenroll.html).
 
 If the firmware is updated, Secure Boot is disabled, or the Secure Boot keys change, the PCR values may no longer match. In that case, the TPM will not unseal the secret and the system should fall back to asking for the LUKS passphrase.
 
